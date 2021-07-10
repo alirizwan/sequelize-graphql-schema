@@ -29,7 +29,7 @@ const _ = require('lodash');
 const { createContext, EXPECTED_OPTIONS_KEY, resetCache } = require('dataloader-sequelize');
 const TRANSACTION_NAMESPACE = 'sequelize-graphql-schema';
 const cls = require('cls-hooked');
-const uuid = require('uuid/v4');
+const { v4: uuid } = require('uuid');
 const sequelizeNamespace = cls.createNamespace(TRANSACTION_NAMESPACE);
 let dataloaderContext;
 
@@ -414,8 +414,8 @@ const mutationResolver = async (model, inputTypeName, mutationName, source, args
         through: _args[name],
         transaction
       } : {
-          transaction
-        });
+        transaction
+      });
 
       return finalize(res);
 
@@ -451,10 +451,10 @@ const mutationResolver = async (model, inputTypeName, mutationName, source, args
       where,
       transaction
     } : _args[name], {
-        where,
-        validate,
-        transaction
-      });
+      where,
+      validate,
+      transaction
+    });
 
     if (opType !== 'create' && opType !== 'destroy') {
       return finalize(await _model.findOne({ where: updWhere, transaction }));
@@ -706,7 +706,7 @@ const generateGraphQLField = (type) => {
   let field = getTypeByString(typeReference.type);
 
   if (!field) field = GraphQLString;
-  if (typeReference.isArray)field = new GraphQLList(field);
+  if (typeReference.isArray) field = new GraphQLList(field);
   if (typeReference.isRequired) field = GraphQLNonNull(field);
 
   return { type: field };
@@ -1636,19 +1636,19 @@ const generateSubscriptionRootType = (models, inputTypes, inputUpdateTypes, outp
             const filterType = [];
 
             if ((!args.mutation || args.mutation.indexOf("CREATED") >= 0)
-                && models[inputTypeName].graphql.excludeSubscriptions.indexOf('create') === -1)
+              && models[inputTypeName].graphql.excludeSubscriptions.indexOf('create') === -1)
               filterType.push(camelCase(inputTypeName + 'Add'))
 
             if ((!args.mutation || args.mutation.indexOf("UPDATED") >= 0)
-                && models[inputTypeName].graphql.excludeSubscriptions.indexOf('update') === -1)
+              && models[inputTypeName].graphql.excludeSubscriptions.indexOf('update') === -1)
               filterType.push(camelCase(inputTypeName + 'Edit'))
 
             if ((!args.mutation || args.mutation.indexOf("DELETED") >= 0)
-                && models[inputTypeName].graphql.excludeSubscriptions.indexOf('destroy') === -1)
+              && models[inputTypeName].graphql.excludeSubscriptions.indexOf('destroy') === -1)
               filterType.push(camelCase(inputTypeName + 'Delete'))
 
             if ((!args.mutation || args.mutation.indexOf("BULK_CREATED") >= 0)
-                && hasBulkOptionCreate)
+              && hasBulkOptionCreate)
               filterType.push(camelCase(inputTypeName + 'AddBulk'))
 
             return pubsub.asyncIterator(filterType);
