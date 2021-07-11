@@ -1,4 +1,4 @@
-name: Node.js Package
+name: npmpublish
 
 on:
   push:
@@ -6,12 +6,9 @@ on:
       - master
       - develop
       - releast/*
-  pull_request:
-    branches: 
-      - develop
 
 jobs:
-  build:
+  code-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -22,7 +19,7 @@ jobs:
       - run: npm run check
 
   publish-npm:
-    needs: build
+    needs: code-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -32,9 +29,9 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm run publish
-        if: github.event == 'push' && github.ref != 'develop'
+        if: github.ref != 'develop'
       - run: npm run publish-beta
-        if: github.event == 'push' && github.ref == 'develop'
+        if: github.ref == 'develop'
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
   

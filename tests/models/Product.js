@@ -20,28 +20,37 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
         allowNull: false
-      },
-      scopeId: DataTypes.INTEGER
-  }, {
-    paranoid: false,
-    scopes: {
-      scope(value) {
-        return { where: { scopeId: value } };
       }
-    }
+  }, {
+    paranoid: true
   });
 
-  Product.associate = function(models) {
-    Product.belongsToMany(models.Attribute, {through: models.ProductAttribute, foreignKey: 'productId', direction: ['product']});
-    Product.hasMany(models.Image);
+  Product.associate = (models) => {
+    Product.belongsToMany(models.Attribute, {through: models.ProductAttribute, foreignKey: 'productId'});
+    Product.belongsToMany(models.Image, {through: models.ProductMedia, as: 'Media', foreignKey: 'productId'});
+    Product.belongsToMany(models.Image, {through: models.ProductImage, foreignKey: 'productId'});
   };
 
   Product.graphql = {
-    associationDirection: {
-      Attribute: 'Product'
+    //restoreDeleted: true,
+    attributes: {
+      include: {
+      customField: {output: '[customProduct]', resolver: () => Promise.resolve(1) }
+    }},
+    bulk: ['destroy', 'update'],
+    readonly: false,
+    joins: true,
+    types: {
+      customProduct: {id: 'int'},
+      customNestedTye: {
+        image: 'Image'
+      }
     },
     queries: {
-      ProductQuery: { output: 'Product', resolver: () => Promise.resolve({}) }
+      ProductQuery: { input: 'customNestedTye', output: 'Product', resolver: () => Promise.resolve({}) }
+    },
+    mutations: {
+      ProductMutation: {input: 'Product', output: 'Product', resolver: () => Promise.resolve({}) }
     }
   };
 

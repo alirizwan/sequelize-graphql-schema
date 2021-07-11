@@ -1,3 +1,4 @@
 tests/*
 dist/*
 node_modules
+lib/*

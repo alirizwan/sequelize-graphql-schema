@@ -1,22 +1,31 @@
 {
-  "name": "sequelize-graphql-schema",
-  "version": "1.0.0-beta.0",
-  "description": "A helper library that lets you focus on business logic by automatically generating GraphQLSchema and manages graphQL from Sequelize model.",
-  "main": "index.js",
+  "name": "graphcraft",
+  "version": "1.0.0-beta.41",
+  "description": "Rapildy build and extend GraphQL API based on Sequelize models. This library helps you focus on business logic while taking care of GraphQL schema automatically.",
+  "main": "src/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist",
+    "publish-beta": "npm run lint && npm publish --tag beta",
+    "publish-prod": "npm publish",
     "check": "npm run lint && npm run test",
-    "clean": "rm -f dist/*",
     "format": "prettier-eslint --write \"src/*.js\"",
     "jest": "jest",
     "jest-coverage": "npm run jest -- --coverage",
     "lint": "eslint src --cache",
     "test": "npm run test-db-reset && npm run jest",
-    "test-db-reset": "rm -rf tests/database.db && sequelize db:migrate"
+    "test-db-reset": "rm -rf tests/database.db && node tests/reset-db.js"
+  },
+  "files": [
+    "/src",
+    "package.json",
+    "README"
+  ],
+  "publishConfig": {
+    "cache": "cache/.npm",
+    "registry": "https://registry.npmjs.org/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alirizwan/sequelize-graphql-schema.git"
+    "url": "git+https://github.com/almost-full-stack/graphcraft"
   },
   "keywords": [
     "graphql",
@@ -31,64 +40,51 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alirizwan/sequelize-graphql-schema/issues"
+    "url": "https://github.com/almost-full-stack/graphcraft/issues"
   },
-  "homepage": "https://github.com/alirizwan/sequelize-graphql-schema#readme",
+  "homepage": "https://github.com/almost-full-stack/graphcraft#readme",
   "dependencies": {
     "camelcase": "^5.3.1",
     "cls-hooked": "^4.2.2",
-    "dataloader-sequelize": "^2.0.1",
+    "dataloader-sequelize": "^2.3.3",
     "graphql-relay": "^0.6.0",
-    "graphql-request": "^1.8.2",
-    "graphql-sequelize": "^9.3.6",
-    "graphql-subscriptions": "^1.1.0",
-    "lodash": "^4.17.15",
-    "uuid": "^3.3.3"
+    "graphql-request": "^3.4.0",
+    "graphql-sequelize": "^9.4.3",
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "eslint": "^6.3.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^22.16.0",
-    "eslint-plugin-node": "^9.2.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "express": "^4.17.1",
-    "express-graphql": "^0.9.0",
-    "graphql": "^14.4.1",
-    "husky": "^3.0.5",
-    "jest-cli": "^24.9.0",
-    "lint-staged": "^9.2.5",
-    "prettier-eslint-cli": "^5.0.0",
-    "sequelize": "^5.18.1",
-    "sequelize-cli": "^5.5.1",
-    "sqlite3": "^4.1.0",
-    "stringifier": "^2.1.0"
+    "eslint": "^5.13.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jest": "^22.0.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "graphql": "^14.5.4",
+    "husky": "^1.1.4",
+    "jest": "^24.9.0",
+    "jest-cli": "^23.6.0",
+    "prettier-eslint-cli": "^4.7.1",
+    "sequelize": "^6.2.2",
+    "sequelize-cli": "^6.1.0",
+    "sqlite3": "^5.0.2",
+    "stringifier": "^2.0.0",
+    "supertest": "^6.0.1"
   },
   "peerDependencies": {
-    "sequelize": "^5.18.1",
-    "graphql": "^14.5.4"
+    "graphql": "^15.1.0",
+    "sequelize": "^6.2.2"
   },
   "jest": {
     "testEnvironment": "node",
     "verbose": true
   },
-  "babel": {
-    "plugins": [
-      "@babel/plugin-proposal-object-rest-spread"
-    ],
-    "presets": [
-      "@babel/preset-env"
-    ]
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
+  "husky": {
+    "hooks": {
+      "pre-commit": "eslint . --fix"
+    }
   }
 }
